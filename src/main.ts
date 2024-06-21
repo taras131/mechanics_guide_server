@@ -5,6 +5,11 @@ import { DocumentBuilder, SwaggerModule } from "@nestjs/swagger";
 async function start() {
   const PORT = process.env.PORT || 5000;
   const app = await NestFactory.create(AppModule);
+  app.enableCors({
+    origin: 'http://localhost:3000',
+    methods: 'GET,HEAD,PUT,PATCH,POST,DELETE,OPTIONS',
+    allowedHeaders: 'content-type, authorization',
+  });
   const config = new DocumentBuilder()
     .setTitle("troubleshooting")
     .setDescription("Документация API")

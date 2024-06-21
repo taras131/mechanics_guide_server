@@ -1,4 +1,4 @@
-import { HttpException, HttpStatus, Injectable, UnauthorizedException } from "@nestjs/common";
+import { HttpException, HttpStatus, Injectable, Query, UnauthorizedException } from "@nestjs/common";
 import { CreateUserDto } from "../users/dto/create-user.dto";
 import { UsersService } from "../users/users.service";
 import { JwtService } from "@nestjs/jwt";
@@ -27,7 +27,7 @@ export class AuthService {
     if (user && passWordEquals) {
       return user;
     }
-    throw new UnauthorizedException({message: 'Некорректный email или пароль'});
+    throw new UnauthorizedException({ message: "Некорректный email или пароль" });
   }
 
   async login(userDto: CreateUserDto) {
@@ -36,7 +36,7 @@ export class AuthService {
   }
 
   async registration(userDto: CreateUserDto) {
-    const candidate = this.usersService.getUserByEmail(userDto.email);
+    const candidate = await this.usersService.getUserByEmail(userDto.email);
     if (candidate) {
       throw new HttpException("пользователь с таким email уже существует", HttpStatus.BAD_REQUEST);
     }
@@ -45,4 +45,7 @@ export class AuthService {
     return await this.generateToken(user);
   }
 
+  async checkAuth( @Query('token') token: string) {
+    console.log(token);
+  }
 }
