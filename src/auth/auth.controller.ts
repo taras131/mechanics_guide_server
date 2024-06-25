@@ -1,4 +1,4 @@
-import { Body, Controller, Get, Post, Req } from "@nestjs/common";
+import { Body, Controller, Get, Post, Headers } from "@nestjs/common";
 import { ApiTags } from "@nestjs/swagger";
 import { CreateUserDto } from "../users/dto/create-user.dto";
 import { AuthService } from "./auth.service";
@@ -21,8 +21,8 @@ export class AuthController {
   }
 
   @Get("/check")
-  checkAuth(@Req() request: Request) {
-    const token = request.query.token as string;
+  checkAuth(@Headers('Authorization') authHeader: string) {
+    const token = authHeader.split(" ")[1]
     return this.authService.checkAuth(token)
   }
 

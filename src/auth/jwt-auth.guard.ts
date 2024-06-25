@@ -6,7 +6,6 @@ import { JwtService } from "@nestjs/jwt";
 export class JwtAuthGuard implements CanActivate {
   constructor(private jwtService: JwtService) {
   }
-
   canActivate(context: ExecutionContext): boolean | Promise<boolean> | Observable<boolean> {
     const req = context.switchToHttp().getRequest();
     try {
@@ -17,7 +16,7 @@ export class JwtAuthGuard implements CanActivate {
       }
       const user = this.jwtService.verify(token);
       req.user = user;
-      return true;
+      return user;
     } catch (e) {
       throw new UnauthorizedException({ message: "Пользователь не авторизован" });
     }

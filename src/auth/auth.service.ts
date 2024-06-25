@@ -16,7 +16,8 @@ export class AuthService {
     const payload = {
       email: user.email,
       id: user.id,
-      roles: user.roles
+      roles: user.roles,
+      name: user.name
     };
     return { token: this.jwtService.sign(payload) };
   }
@@ -32,7 +33,10 @@ export class AuthService {
 
   async login(userDto: CreateUserDto) {
     const user = await this.validateUser(userDto);
-    return await this.generateToken(user);
+    if(user) {
+      return await this.generateToken(user);
+    }
+
   }
 
   async registration(userDto: CreateUserDto) {
@@ -45,7 +49,12 @@ export class AuthService {
     return await this.generateToken(user);
   }
 
-  async checkAuth( @Query('token') token: string) {
-    console.log(token);
+  async checkAuth(token: string) {
+    if (token) {
+      const user = await this.jwtService.verify(token);
+      return await this.generateToken(user);
+    } else {
+      throw new UnauthorizedException({ message: "Токен не найден" });
+    }
   }
 }
